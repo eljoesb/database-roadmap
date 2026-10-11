@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v6
+
+      - name: Preparar Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v2
+        with:
+          components: rustfmt, clippy
+
+      - name: Comprobar formato
+        run: cargo fmt --all -- --check
+
+      - name: Ejecutar Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Ejecutar pruebas
+        run: cargo test --all-features
